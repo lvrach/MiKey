@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <dlfcn.h>
-#include "buffer.h"
+#include "../include/buffer.h"
 
 #define SIZE 1024
 #define SLEEP 50000
