@@ -2,28 +2,29 @@ Mikey
 =====
 
 Description
-====
+===
 MiKey is a minimal and modular Linux keylogger. It provides a toolkit that monitors and records all activities performed on an H/Y. It makes use of the Xlib.
 
 Installation
-====
+===
 make
+
 ./mikey
 
 Usage
-====
+===
 * -b, --background    Runs the keylogger at the backround.
 * -o, --output        Declares the path of the output file. Used by plain-text module.
 
 Modules
-====
+===
 Modules receive the recorded data and handle it accordingy. 
 
 To build a module, you need to define two funtions:
 
-1. *void handleArgs(int argc, char \*argv[])* - This function handles the given arguments by the user. It is executed by the core only once at the very beginning so any initialization (for example, connection to a server) also needs to take place here.
+1. **void handleArgs(int argc, char \*argv[])** - This function handles the given arguments by the user. It is executed by the core only once at the very beginning so any initialization (for example, connection to a server) also needs to take place here.
 
-1. *void getFeed(char \*b)* - This function receives a copy of a buffer that holds the recent pressed keystrokes. This buffer tries to hold consistent data and the core will feed the plugins with a new one by triggering this function when nothing is pressed within 5 seconds or user changes the window.
+1. **void getFeed(char \*b)** - This function receives a copy of a buffer that holds the recent pressed keystrokes. This buffer tries to hold consistent data and the core will feed the plugins with a new one by triggering this function when nothing is pressed within 5 seconds or user changes the window.
 
 For a skeleton, take a look at plaintext module. All it does is logging the received data to the specified file.
 
