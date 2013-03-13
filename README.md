@@ -2,22 +2,22 @@ Mikey
 =====
 
 Description
-===
+-----------
 MiKey is a minimal and modular Linux keylogger. It provides a toolkit that monitors and records all activities performed on an H/Y. It makes use of the Xlib.
 
 Installation
-===
+-----------
 make
 
 ./mikey
 
 Usage
-===
+-----
 * -b, --background    Runs the keylogger at the backround.
 * -o, --output        Declares the path of the output file. Used by plain-text module.
 
 Modules
-===
+-------
 Modules receive the recorded data and handle it accordingy. 
 
 To build a module, you need to define two funtions:
@@ -29,8 +29,8 @@ To build a module, you need to define two funtions:
 For a skeleton, take a look at plaintext module. All it does is logging the received data to the specified file.
 
 Licence
-=====
-Mikey is released under the (http://opensource.org/licenses/bsd-license.html "Modified BSD License").
+-------
+Mikey is released under the [Modified BSD Licence](http://opensource.org/licenses/bsd-license.html "Modified BSD License").
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
