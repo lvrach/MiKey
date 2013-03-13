@@ -15,6 +15,7 @@
 *.exe
 *.out
 *.app
+mikey
 
 # Log files
 *.log
