@@ -2,6 +2,8 @@
 #include <stdarg.h>
 #include <time.h>
 
+char *outputfile = "out.log";
+
 void log(const char * fmt, ...) {
 
     va_list va_alist;
@@ -21,7 +23,7 @@ void log(const char * fmt, ...) {
     strcat(logbuf, buf);
     strcat(logbuf, "\n");
 
-    if ((file = fopen("out.log", "a+")) != NULL) {
+    if ((file = fopen(outputfile, "a+")) != NULL) {
         fputs(logbuf, file);
         fclose(file);
     }
@@ -30,4 +32,26 @@ void log(const char * fmt, ...) {
 
 void getFeed(char *b) {
     log(" %s\n", b);
+}
+
+void handleArgs(int argc, char* argv[]) {
+
+    int i;
+
+    for (i = 1; i < argc; i++) {
+        if ((strcmp(argv[i], "-b") == 0) || (strcmp(argv[i], "--background") == 0)) {
+            printf("aaaaaa");
+        }
+
+        else if ((strcmp(argv[i], "-o") == 0) || (strcmp(argv[i], "--output") == 0)) {
+            //output = 1;
+            if (i + 1 <= argc - 1)  {
+                i++;
+                outputfile = argv[i];
+            }
+            else {
+                printf("Not good.");
+            }
+        }
+    }
 }

