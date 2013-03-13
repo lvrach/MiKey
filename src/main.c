@@ -31,17 +31,20 @@ void handleArgs(void **hdlarr, int argc, char* argv[]) {
 }
 
 void moduleHandleArgs(void **hdlarr, int arc, char* argv[]) {
+
     typedef void (*initf)();
     initf func;
     char *result;
+    int i; 
+    for (i = 0; i < (sizeof(plugins) / sizeof(plugins[0])); i++) {
+        func = dlsym(hdlarr[i], "handleArgs");
+        result = dlerror();
+        if (result) {
+            printf("%s", result);
+        }
 
-    func = dlsym(hdlarr[0], "handleArgs");
-    result = dlerror();
-    if (result) {
-        printf("%s", result);
+        func(arc, argv);
     }
-
-    func(arc, argv);
 
 }
 
@@ -57,17 +60,20 @@ void *initPlugins(void **hdlarr) {
 }
 
 void moduleFeed(void **hdlarr, char *b) {
+
     typedef void (*initf)();
     initf func;
     char *result;
+    int i;
+    for (i = 0; i < (sizeof(plugins) / sizeof(plugins[0])); i++) {
+        func = dlsym(hdlarr[0], "getFeed");
+        result = dlerror();
+        if (result) {
+            printf("%s", result);
+        }
 
-    func = dlsym(hdlarr[0], "getFeed");
-    result = dlerror();
-    if (result) {
-        printf("%s", result);
+        func(b);
     }
-
-    func(b);
 
 }
 
