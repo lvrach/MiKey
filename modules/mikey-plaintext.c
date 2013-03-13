@@ -39,9 +39,6 @@ void handleArgs(int argc, char* argv[]) {
     int i;
 
     for (i = 1; i < argc; i++) {
-        if ((strcmp(argv[i], "-b") == 0) || (strcmp(argv[i], "--background") == 0)) {
-            printf("aaaaaa");
-        }
 
         else if ((strcmp(argv[i], "-o") == 0) || (strcmp(argv[i], "--output") == 0)) {
             //output = 1;
