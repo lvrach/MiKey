@@ -8,16 +8,15 @@ MOD_DIR=modules
 BUILD_DIR=build
 
 CFLAGS=-Wall -ggdb
-LDFLAGS= -lX11 -ldl -Wl,-rpath,./$(MOD_DIR) 
+LDFLAGS=-lX11 -ldl -Wl,-rpath,./$(MOD_DIR) 
 
 MODS=mikey-plaintext.so
 
 
-
 $(P): buffer.o main.o MODULES
-	$(CC) $(LDFLAGS) $(BUILD_DIR)/main.o $(BUILD_DIR)/$(INC_DIR)/buffer.o -o $@
+	$(CC) $(BUILD_DIR)/main.o $(BUILD_DIR)/$(INC_DIR)/buffer.o $(LDFLAGS) -o $@
 
-main.o : $(SRC_DIR)/main.c
+main.o: $(SRC_DIR)/main.c
 	mkdir -p $(BUILD_DIR)
 	$(CC) -c $(CFLAGS) $(LDFLGAS) -o $(BUILD_DIR)/$@  $^ 
 
@@ -25,7 +24,7 @@ buffer.o: $(INC_DIR)/buffer.c
 	mkdir -p $(BUILD_DIR)/$(INC_DIR)
 	$(CC) -c $(CFLAGS) $(LDFLGAS) -o $(BUILD_DIR)/$(INC_DIR)/$@  $^ 
 
-MODULES :
+MODULES:
 	make -C $(MOD_DIR)
 
 .PHONY: clean
