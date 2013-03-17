@@ -40,7 +40,7 @@ void handleArgs(int argc, char* argv[]) {
 
     for (i = 1; i < argc; i++) {
 
-        else if ((strcmp(argv[i], "-o") == 0) || (strcmp(argv[i], "--output") == 0)) {
+        if ((strcmp(argv[i], "-o") == 0) || (strcmp(argv[i], "--output") == 0)) {
             //output = 1;
             if (i + 1 <= argc - 1)  {
                 i++;

