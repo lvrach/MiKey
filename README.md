@@ -3,20 +3,20 @@ Mikey
 
 Description
 -----------
-MiKey is a minimal and modular Linux keylogger. It provides a toolkit that monitors and records all activities performed on an H/Y. It makes use of the Xlib.
+MiKey is a minimal and modular Linux keylogger. It provides a toolkit that monitors and records all activities performed on a computer. It makes use of the Xlib.
 
 Installation
 -----------
-make
+    make
 
-./mikey
+    ./mikey
 
 Usage
 -----
 * -b, --background    Runs the keylogger at the backround.
 * -o, --output        Declares the path of the output file. Used by plain-text module.
 
-Modules
+Building a Module
 -------
 Modules receive the recorded data and handle it accordingy. 
 
@@ -27,6 +27,25 @@ To build a module, you need to define two funtions:
 1. **void getFeed(char \*b)** - This function receives a copy of a buffer that holds the recent pressed keystrokes. This buffer tries to hold consistent data and the core will feed the plugins with a new one by triggering this function when nothing is pressed within 5 seconds or user changes the window.
 
 For a skeleton, take a look at plaintext module. All it does is logging the received data to the specified file.
+
+Modules
+-------
+
+### Plain Text
+Plain Text is logging the received data to the specified file.
+
+**Usage** 
+* -o, --output    Declares the path of the output file.
+
+### Raw Tcp
+Raw Tcp is sending the received data into the specified server over TCP. You will need a TCP listener to receive data. Listener server must run before the module attempt any connection. You can use:
+
+    netcat -l -p 13050 
+
+**Usage**
+* --host ADDRESS    Specify listener address. Required.
+* --port PORT       Specify listener port. Default: 13050.
+* --no-dns          Do not do DNS lookup.
 
 Licence
 -------
