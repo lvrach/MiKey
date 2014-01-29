@@ -14,11 +14,17 @@ typedef struct buf {
 BUFFER *initBuffer() { 
 
     BUFFER *b = (BUFFER *) malloc(sizeof(BUFFER));
-    b->size = SIZE;
-    b->occupied = 1;
-    b->buffer = (char *) malloc(sizeof(char) * SIZE);
-    b->buffer[0] = '\0';
-    return b;
+
+    if (b != NULL) {
+        b->size = SIZE;
+        b->occupied = 1;
+        b->buffer = (char *) malloc(sizeof(char) * SIZE);
+        b->buffer[0] = '\0';
+        return b;
+    }
+    fprintf(stderr, "Error allocating memory.\n");
+    return 0;
+    exit(1);
 }
  
 int addData(BUFFER *b, char *data) {
@@ -28,8 +34,8 @@ int addData(BUFFER *b, char *data) {
     if (b->occupied > b->size) {
         char *tmppointer = realloc(b->buffer, 2 * b->size);
         if (tmppointer == NULL) {
-            printf("Error.");
-            return 0;
+            fprintf(stderr, "Error allocating memory.\n");
+            exit(1);
         }
         else {
             b->buffer = tmppointer;
