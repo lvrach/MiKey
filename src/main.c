@@ -52,6 +52,7 @@ void *initPlugins(void **hdlarr) {
         hdlarr[i] =  dlopen (plugins[i], RTLD_NOW);
         if (!hdlarr[i]) {
             printf("%s", dlerror());
+            exit(1);
         }
     }
 }
